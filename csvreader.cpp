@@ -2,25 +2,66 @@
 #include <fstream>
 #include <sstream>
 #include "csvhead.h"
+#include "tinyxml2.h"
 
+using namespace tinyxml2;
 
 int main(){
 	std::string fileName = "3bed.csv";
-	std::ifstream csvFile(fileName);
 	int r, c;
 	r = rows(fileName);
 	c = cols(fileName);
-	std::cout << "Rows: " << r << "\nCols: " << c << "\n";
+	
+	XMLDocument xmlDoc;
+        XMLNode * pRoot = xmlDoc.NewElement("Root");
+        xmlDoc.InsertFirstChild(pRoot);
+
+        std::string temp;
+        std::string y;
+        std::ifstream file(fileName);
+
+        std::getline(file, temp);
+
+	XMLElement * ryan = xmlDoc.NewElement("state");
+	pRoot -> InsertEndChild(ryan);
+
+	XMLElement * state;
+	XMLElement * zip;
+	XMLElement * city;
+	XMLElement * price;
+	for(int i = 0; i <= r; i++){
+
+		
+		std::getline(file, temp);
+		std::stringstream sstream(temp);
+
+        	std::getline(sstream, temp, ',');
+		std::getline(sstream, temp, ',');
+		zip = xmlDoc.NewElement(temp.c_str());
+
+		std::getline(sstream, temp, ',');
+		city = xmlDoc.NewElement(temp.c_str());
+
+                std::getline(sstream, temp, ',');
+	        state = xmlDoc.NewElement(temp.c_str());
 
 
-/*	std::ifstream csvFile;
-	csvFile.open("test.csv");
+		for(int j = 0; j <= r - 4; j++){
+			std::getline(sstream, temp, ',');
+		}
 
-	while(csvFile.good()){
-		std::string line;
-		getline(csvFile, line, ',');
-		std::cout << line << "\n";
-	}*/
+		price = xmlDoc.NewElement("Price");
+		price -> SetText(temp.c_str());
+       	 	ryan  -> InsertEndChild(state);
+		state -> InsertEndChild(city);
+		city  -> InsertEndChild(zip);
+		zip -> InsertEndChild(price);
+		sstream.str(std::string());
+
+	}
+
+
+	xmlDoc.SaveFile("yolo.xml");
 
 	return 0;
 }
