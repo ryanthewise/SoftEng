@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include <fstream>
 #include <sstream>
 #include "csvhead.h"
@@ -22,8 +23,8 @@ int main(){
 
         std::getline(file, temp);
 
-	XMLElement * ryan = xmlDoc.NewElement("state");
-	pRoot -> InsertEndChild(ryan);
+	XMLElement * root = xmlDoc.NewElement("state");
+	pRoot -> InsertEndChild(root);
 
 	XMLElement * state;
 	XMLElement * zip;
@@ -45,14 +46,15 @@ int main(){
                 std::getline(sstream, temp, ',');
 	        state = xmlDoc.NewElement(temp.c_str());
 
-
 		for(int j = 0; j <= r - 4; j++){
 			std::getline(sstream, temp, ',');
 		}
 
+		temp = temp.substr(0, temp.length() - 1);
+
 		price = xmlDoc.NewElement("Price");
 		price -> SetText(temp.c_str());
-       	 	ryan  -> InsertEndChild(state);
+       	 	root  -> InsertEndChild(state);
 		state -> InsertEndChild(city);
 		city  -> InsertEndChild(zip);
 		zip -> InsertEndChild(price);
