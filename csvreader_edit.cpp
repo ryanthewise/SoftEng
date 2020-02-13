@@ -27,30 +27,30 @@ int main(){
 	pRoot -> InsertEndChild(root);
 	
 	XMLElement * state = xmlDoc.NewElement("state");
-		xmlDoc.InsertFirstChild(state);
-			for(int i = 0; i <= r; i++){
+		xmlDoc.InsertFirstChild(state);					    //begins first child of states
+			for(int i = 0; i <= r; i++){					//some loop needed, currently reading incorrectly
 
 			std::getline(file, temp);
 			std::stringstream sstream(temp);
 
 			std::getline(sstream, temp, ',');
-	   	 	state -> SetAttribute("state_name", temp.c_str());
+	   	 	state -> SetAttribute("state_name", temp.c_str());           //adds an attribute "state_name" to state element
 
 		XMLElement * city = xmlDoc.NewElement("city");
-			xmlDoc.InsertFirstChild(city);
-				for (int p = 0; p <= r; p++){
+			xmlDoc.InsertFirstChild(city);                               //begins first subchild of city
+				for (int p = 0; p <= r; p++){		        	// some loop needed, reading incorrectly
 			
 				std::getline(sstream, temp, ',');
-				city -> SetAttribute("city_name", temp.c_str());
+				city -> SetAttribute("city_name", temp.c_str());     // adds an attribute "city_name" to city
 
 				}
 
 		XMLElement * zip = xmlDoc.NewElement("zip");
-			xmlDoc.InsertFirstChild(zip);
+			xmlDoc.InsertFirstChild(zip);				//begins subchild zip
 				for (int l = 0; l <= r; l++){
-				
+										//some loop needed, incorrect now
 				std::getline(sstream, temp, ',');
-				zip -> SetAttribute("code", temp.c_str());
+				zip -> SetAttribute("code", temp.c_str());      //adds zipcode attribute
 				}	
 
 		for(int j = 0; j <= r - 4; j++){
