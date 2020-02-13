@@ -1,0 +1,16 @@
+<housing>
+    <states>
+        <state state_name="Metr">
+            <city city_name="City">
+                <zip code="Metro">
+                    <Price>Metr</Price>
+                </zip>
+            </city>
+            <city city_name="Metr">
+                <zip code="Metr">
+                    <Price>Met</Price>
+                </zip>
+            </city>
+        </state>
+    </states>
+</housing>
