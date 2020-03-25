@@ -9,3 +9,14 @@ Joseph Turner
 
 Project Intent:
 To create software using tinyXML that analyzes median neighborhood rental data against estimated mortgage data to identify potential real estate opportunities.
+
+
+How to Run:
+1) Compile the proposedMain.cpp and tinyxml2.cpp
+2) In command line, put your file as argument after the exe file
+
+Included in this file will be two examples.
+The SmallSample.csv is a demonstration with an already existing example.
+The 3bedroom.csv would be an example file
+
+NOTES: May be some issues with how Windows and Unix systems treat text files (\r\n)
