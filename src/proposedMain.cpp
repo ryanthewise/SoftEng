@@ -137,9 +137,9 @@ int main(int argc, char *argv[])
 	
 	// Currently the Search Functionality. Very Simple
 	
-	/*
+	
 	std::cout<<"State Abberviation: ";
-	std::string searchState,searchCity,searchZip; std::cin>>searchState;
+	std::string searchState,searchCity,searchZip; std::getline(std::cin,searchState);
 	if(root->FirstChildElement(searchState.c_str())->FirstChildElement() == NULL){
 		std::cout <<"No Results\n";
 	}
@@ -154,13 +154,13 @@ int main(int argc, char *argv[])
 				std::cout <<"No Results\n";
 			}
 			else{
-				XMLText* textNode = root->FirstChildElement(searchState.c_str())->FirstChildElement(searchCity.c_str())->FirstChildElement(searchZip.c_str())->FirstChild()-FirstChild()->ToText();
+				XMLText* textNode = root->FirstChildElement(searchState.c_str())->FirstChildElement(searchCity.c_str())->FirstChildElement(searchZip.c_str())->FirstChildElement()->FirstChild()->ToText();
 				std::string title;
 				title = textNode->Value();
 				std::cout<<"Median Price is: " << title;
 			}
 		}
-	}*/
+	}
 	root = nullptr;
 	
 	return 0;
