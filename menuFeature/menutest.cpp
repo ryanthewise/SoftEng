@@ -4,6 +4,7 @@ int main () {
 
 
 char option;
+char repeat;
 std::cout<< "Please select an option from the menu."<< std::endl;
 std::cout<<"----------------------MAIN MENU----------------------"<<std::endl;
 std::cout<< "(1) Search by City\n(2) Search by Zip Code\n(3) Search by State\n(4) Search by Price Range"<<std::endl;
@@ -51,11 +52,12 @@ switch (option) {
     break;
 
     default :
-    char repeat;
+   
     std:: cout << "Invalid option, would you like to try again: enter Y or N."<<std::endl;
     std::cin>>repeat;
 
-} while (repeat == 'Y');
+} 
+  }while (repeat == 'Y');
 
 return 0;
 }
