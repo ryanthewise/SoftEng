@@ -12,7 +12,7 @@ std::cin>>option;
   std::string citysearch;
   std::string zipsearch;
   std::string statesearch;
-  
+do {  
 switch (option) {
     case '1': 
     std::cout<<"Please type the name of the city you wish to search, followed by the 'enter' key: ";
@@ -51,10 +51,11 @@ switch (option) {
     break;
 
     default :
-    std:: cout << "Invalid option, please try again."<<std::endl;
-    std::cin>>option;
+    char repeat;
+    std:: cout << "Invalid option, would you like to try again: enter Y or N."<<std::endl;
+    std::cin>>repeat;
 
-}
+} while (repeat == 'Y');
 
 return 0;
 }
