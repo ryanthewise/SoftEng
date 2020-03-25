@@ -40,6 +40,7 @@ while(csvFile.good()){
 
 //beginnig of user search menu
 char option;
+char repeat;
 std::cout<< "Please select an option from the menu."<< std::endl;
 std::cout<<"----------------------MAIN MENU----------------------"<<std::endl;
 std::cout<< "(1) Search by City\n(2) Search by Zip Code\n(3) Search by State\n(4) Search by Price Range"<<std::endl;
@@ -48,7 +49,7 @@ std::cin>>option;
   std::string citysearch;
   std::string zipsearch;
   std::string statesearch;
-  
+do {  
 switch (option) { //add in a loop to return to menu upon invalid
     case '1': //create a searching function outside of main
     std::cout<<"Please type the name of the city you wish to search, followed by the 'enter' key: ";
@@ -98,10 +99,10 @@ switch (option) { //add in a loop to return to menu upon invalid
     break;
 
     default :
-    std:: cout << "Invalid option, please try again."<<std::endl;
+    std:: cout << "Invalid option, please try again: enter Y or N."<<std::endl;
 }
 
-
+}while (repeat == 'Y');
 
     return 0;
 }
