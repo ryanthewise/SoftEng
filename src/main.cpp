@@ -5,6 +5,8 @@
 #include <stdexcept>
 #include <map>
 #include <vector>
+#include <algorithm>
+#include <unordered_set>
 #include "tinyxml2.h"
 using namespace tinyxml2;
 
@@ -18,9 +20,8 @@ unsigned int rows(std::string);	// returns the number of rows in file
 
 unsigned int cols(std::string);	// returns the number of columns in file
 
-void searchCity(std::string, std::string);	//currently being used for both state and city search
-void searchState();				//might be deleted
-void searchZip();				//needs some love
+void searchFunc(std::string, std::string);	//used for state, city, and zipcode search
+
 void searchPrice();				//also needs some love
 
 int main(int argc, char *argv[])
@@ -151,9 +152,7 @@ int main(int argc, char *argv[])
 	char option;
 	char repeat;
 
-	std::string citysearch;
-	std::string zipsearch;
-	std::string statesearch;
+	std::string search;
 
 	do {
 		std::cout<< "Please select an option from the menu."<< std::endl;
@@ -165,11 +164,11 @@ int main(int argc, char *argv[])
 			case '1': //create a searching function outside of main
 		    		std::cout<<"\nPlease type the name of the city you wish to search, followed by the 'enter' key: ";
 				std::cin.ignore();
-			    	std::getline(std::cin,citysearch);
-				if (citysearch.size() > 2)
-			    		searchCity(fileName, citysearch); //returns a list different zipcodes within a city
+			    	std::getline(std::cin,search);
+				if (search.size() > 2 && isalpha(search[0]))
+			    		searchFunc(fileName, search); //returns a list different zipcodes within a city
 				else
-					std::cout << "\nInvalid Entry - Too few characters indicates you are attempting to search by state. Try again with option 3.\n";
+					std::cout << "\nInvalid Entry - Please enter a city.\n";
 			    	//using an if statement, create a "pushback" feature to select from list
 			    	std:: cout << "Would you like to search again: enter Y or N.\t";
 				std::cin >> repeat;
@@ -178,9 +177,11 @@ int main(int argc, char *argv[])
 
 			case '2': //create function outside of main
 			    	std::cout<<"Please type the zip code you wish to search, followed by the 'enter' key: ";
-			    	std::cin>>zipsearch;
-			    	if (zipsearch == zip_code)
-			    		searchZip(); //returns average pricing within specified zipcode
+			    	std::cin>>search;
+			    	if (search.size() == 5 && !isalpha(search[0]))
+			    		searchFunc(fileName, search); //returns average pricing within specified zipcode
+				else
+					std::cout << "\nInvalid Entry - Please enter a five digit zip code.\n";
 			    	std:: cout << "Would you like to search again: enter Y or N.\t";
 				std::cin >> repeat;
 				std::cout << "\n\n";
@@ -189,11 +190,11 @@ int main(int argc, char *argv[])
 			case '3': // create funcction outside of main
 			    	std::cout<<"Please type the state abbreviation you wish to search, followed by the 'enter' key: ";
                                 std::cin.ignore();
-                                std::getline(std::cin,citysearch);
-                                if (citysearch.size() == 2)
-                                        searchCity(fileName, citysearch); //returns a list different zipcodes within a city
+                                std::getline(std::cin,search);
+                                if (search.size() == 2)
+                                        searchFunc(fileName, search); //returns a list different zipcodes within a city
                                 else
-                                        std::cout << "\nInvalid Entry - State abbreviations are 2 characters long.\n";
+                                        std::cout << "\nInvalid Entry - Please enter the state abbreviation.\n";
 
 
 			    	//create a select option for city, then for zip, return price
@@ -241,12 +242,12 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-void searchCity(std::string f, std::string query){
+void searchFunc(std::string f, std::string query){
 //some code that returns list of zipcodes
         std::ifstream file(f);
         std::string stringHolder, cityTemp, stateTemp, zipTemp, priceTemp;
-	std::vector<std::string> zips, cities, states, prices;
-	unsigned int count = 0, input;
+	std::vector<std::string> zips, zipsTemp, cities, citiesTemp, states, prices;
+	unsigned int count = 0, input = 0, flag;
 	unsigned int columns = cols(f);
 
         while(std::getline(file, stringHolder)){			//gets contents of file
@@ -258,57 +259,122 @@ void searchCity(std::string f, std::string query){
 			switch(count){
 				case 1: //grab zip
 					zipTemp = stringHolder;
+					if (zipTemp == query){
+						input = 1;
+						flag = 1;
+					}
 					break;
 				case 2: //grab city
 					cityTemp = stringHolder;
+                                        if (cityTemp == query){
+                                                input = 2;
+						flag = 2;
+                                        }
 					break;
 				case 3: //grab state
 					stateTemp = stringHolder;
+                                        if (stateTemp == query){
+                                                input = 3;
+						flag = 3;
+                                        }
 					break;
 				default:
 					break;
 			}
 
-			if(count == columns - 1)
+			if(count == columns - 1)			//columns isn't a constant value otherwise this would be in the switch as a fourth case
 				priceTemp = stringHolder;
-
-			if(query == stringHolder){			//pushes good zips to vector
-				input = 1;
-			}
 
 			count++;
 			if(count == columns){				//resets counter for next row
-				if(input == 1){
+				if(input == 1 || input == 2 || input == 3){
 	                                zips.push_back(zipTemp);
         	                        cities.push_back(cityTemp);
 					states.push_back(stateTemp);
                 	                prices.push_back(priceTemp);
-					input = 0;
+					if(input != 1)
+						input = 0;
 				}
 				count = 0;
 			}
                 }
         }
+	input = flag;
 	if (zips.size() == 0){
 		std::cout << "No results found for search query: " << query << "\n\n";
 	}
 	else{
-		std::cout << "\nSelect a zipcode from the choices below\n\n";
+		switch(input){
+			case 1:
+		                std::cout << "\nCity\tState\tZipcode\tPrice\n";
+		                std::cout << cities[0] << "\t" << states[0] << "\t" << zips[0] << "\t$" << prices[0] << "\n\n";
+				break;
+			case 2:
+	                        std::cout << "\nSelect a zipcode from the choices below\n\n";
+	                        for (unsigned int i = 0; i < zips.size(); i++){
+	                                std::cout << "(" << i << ") " << zips[i] << "\n";
+	                                count = i;
+	                        }
+	                        std::cout << "\n";
+		                std::cin >> input;
+		                while(input < 0 || input > count){
+		                        std::cout << "Invalid input: Must be a value listed above. Try again.\n";
+		                        std::cin >> input;
+		                }
+		                std::cout << "\nCity\tState\tZipcode\tPrice\n";
+		                std::cout << cities[input] << "\t" << states[input] << "\t" << zips[input] << "\t$" << prices[input] << "\n\n";
+				break;
+			case 3:
+				citiesTemp = cities;
+				std::cout << "\nSelect a city from the choices below\n\n";
+
+				std::sort(citiesTemp.begin(), citiesTemp.end());
+				citiesTemp.erase(std::unique(citiesTemp.begin(), citiesTemp.end()), citiesTemp.end());
+
+                                for (unsigned int i = 0; i < citiesTemp.size(); i++){
+                                        std::cout << "(" << i << ") " << citiesTemp[i] << "\n";
+                                        count = i;
+                                }
+                                std::cout << "\n";
+                                std::cin >> input;
+                                while(input < 0 || input > count){
+                                        std::cout << "Invalid input: Must be a value listed above. Try again.\n";
+                                        std::cin >> input;
+                                }
+				searchFunc(f, citiesTemp[input]);
+                                break;
+			default:
+				break;
+		}
 	}
-        for (unsigned int i = 0; i < zips.size(); i++){
-                std::cout << "(" << i << ") " << zips[i] << "\n";
-		count = i;
+
+/*
+	else{
+		if(input != 1){
+			std::cout << "\nSelect a zipcode from the choices below\n\n";
+		        for (unsigned int i = 0; i < zips.size(); i++){
+		                std::cout << "(" << i << ") " << zips[i] << "\n";
+		                count = i;
+		        }
+		        std::cout << "\n";
+		}
 	}
-	std::cout << "\n";
-	if (zips.size() > 0){
+
+	if (input == 1){
+		std::cout << "\nCity\tState\tZipcode\tPrice\n";
+		std::cout << cities[0] << "\t" << states[0] << "\t" << zips[0] << "\t$" << prices[0] << "\n\n";
+	}
+
+	if (zips.size() > 0 && input != 1){
 		std::cin >> input;
 		while(input < 0 || input > count){
 			std::cout << "Invalid input: Must be a value listed above. Try again.\n";
 			std::cin >> input;
 		}
+		std::cout << "\nCity\tState\tZipcode\tPrice\n";
 		std::cout << cities[input] << "\t" << states[input] << "\t" << zips[input] << "\t$" << prices[input] << "\n\n";
 	}
-
+*/
 }
 
 void searchZip(){
